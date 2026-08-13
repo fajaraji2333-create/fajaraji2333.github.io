@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Circular Banana Farming — Angka Sudah Dibulatkan</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c23 100%);
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(90deg, #006400, #228B22);
+            color: white;
+            padding: 20px 22px;
+            text-align: center;
+        }
+        .header h1 { 
+            font-size: 22px; 
+            margin-bottom: 6px; 
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        .header h1 span.emoji { font-size: 24px; margin-right: 8px; }
+        .header p { 
+            font-size: 14px; 
+            opacity: 0.95; 
+            font-style: italic;
+        }
+        .content { padding: 22px; }
+        h2 { font-size: 16px; color: #2d5016; margin: 20px 0 8px; border-bottom: 2px solid #c5e1a5; padding-bottom: 4px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 6px; }
+        .form-group label { display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 3px; color: #444; }
+        input {
+            width: 100%; padding: 7px 9px; border: 1px solid #bbb; border-radius: 5px;
+            font-size: 14px; background: #fff;
+        }
+        input:focus { outline: none; border-color: #6a9934; background: #f8fde9; }
+        .result-box { background: #f8fde9; border-left: 4px solid #6a9934; padding: 15px 18px; border-radius: 6px; margin: 10px 0; }
+        .result-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 14px; }
+        .result-row.total { font-weight: bold; font-size: 15px; border-top: 1px dashed #b8d88c; padding-top: 10px; margin-top: 5px; color: #006400; }
+        .lababersih { background: #fff3cd; border-left-color: #f59e0b; }
+        .subtotal { padding-left: 15px; color: #444; }
+        .angka { font-family: 'Consolas', monospace; }
+        .keterangan { font-size: 12px; color: #666; margin-top: 8px; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1><span class="emoji">🍌</span>SMART CIRCULAR BANANA FARMING</h1>
+        <p>Model Sistem Agribisnis Pisang Kepok Terintegrasi — PT Inhutani I UMHT Long Nah</p>
+    </div>
+
+    <div class="content">
+
+        <h2>📐 DATA PRODUKSI</h2>
+        <div class="grid">
+            <div class="form-group"><label>Luas Lahan (Hektar)</label><input type="number" id="luas" value="25" oninput="hitungSemua()"></div>
+            <div class="form-group"><label>Jarak Tanam (m)</label><input type="number" id="jarak" value="5" oninput="hitungSemua()"></div>
+            <div class="form-group"><label>Berat per Tandan (kg)</label><input type="number" id="beratTandan" value="15" oninput="hitungSemua()"></div>
+            <div class="form-group"><label>Susut/Tidak Layak (%)</label><input type="number" id="susut" value="10" oninput="hitungSemua()"></div>
+        </div>
+        <div class="grid">
+            <div class="form-group"><label>Harga Jual Pengepul (Rp/kg)</label><input type="number" id="hargaJual" value="7000" oninput="hitungSemua()"></div>
+            <div class="form-group"><label>Total Investasi (Rp)</label><input type="number" id="investasi" value="644361700" oninput="hitungSemua()"></div>
+            <div class="form-group"><label>Masa Manfaat (Tahun)</label><input type="number" id="masaManfaat" value="8" oninput="hitungSemua()"></div>
+        </div>
+
+        <h2>💰 1. UPAH LANGSUNG</h2>
+        <div class="grid">
+            <div class="form-group"><label>Jumlah Tenaga</label><input type="number" id="jmlTenaga" value="7" oninput="hitungSemua()"></div>
+            <div class="form-group"><label>Upah per Hari (Rp)</label><input type="number" id="upahHari" value="120000" oninput="hitungSemua()"></div>
+            <div class="form-group"><label>Masa Panen (Hari)</label><input type="number" id="masaPanen" value="90" oninput="hitungSemua()"></div>
+        </div>
+
+        <h2>🔧 2. BAHAN BANTU</h2>
+        <div class="grid">
+            <div class="form-group"><label>a. Peralatan Produksi (Rp)</label><input type="number" id="biayaPeralatan" value="945000" oninput="hitungSemua()"></div>
+            <div class="form-group"><label>b. Biaya Karung (Rp)</label><input type="number" id="biayaKarung" value="15000000" oninput="hitungSemua()"></div>
+            <div class="form-group"><label>c. Biaya Lain-lain (Rp)</label><input type="number" id="biayaLainBahan" value="0" oninput="hitungSemua()"></div>
+        </div>
+
+        <h2>🌱 3. BIAYA TIDAK LANGSUNG</h2>
+        <div class="grid">
+            <div class="form-group"><label>a. Biaya Pengangkutan (Rp)</label><input type="number" id="biayaAngkut" value="40500000" oninput="hitungSemua()"></div>
+            <div class="form-group"><label>b. Pupuk NPK (Rp)</label><input type="number" id="biayaNpk" value="60000000" oninput="hitungSemua()"></div>
+            <div class="form-group"><label>c. Pupuk Urea (Rp)</label><input type="number" id="biayaUrea" value="42500000" oninput="hitungSemua()"></div>
+            <div class="form-group"><label>d. Pupuk Kandang (Rp)</label><input type="number" id="biayaKandang" value="60000000" oninput="hitungSemua()"></div>
+        </div>
+
+        <h2>📢 4. BEBAN USAHA</h2>
+        <div class="grid">
+            <div class="form-group"><label>Beban Pemasaran (Rp)</label><input type="number" id="bebanPemasaran" value="1650000" oninput="hitungSemua()"></div>
+        </div>
+
+        <h2>📊 HASIL PERHITUNGAN OTOMATIS</h2>
+        <div class="result-box">
+            <div class="result-row"><span>Jumlah Pohon:</span><span class="angka" id="rPohon">—</span></div>
+            <div class="result-row"><span>Produksi Kasar:</span><span class="angka" id="rKasar">—</span></div>
+            <div class="result-row"><span>Berat Tidak Layak:</span><span class="angka" id="rRusak">—</span></div>
+            <div class="result-row" style="font-weight:bold; color:#2d5016;"><span>✅ Produksi Bersih Jual:</span><span class="angka" id="rBersih">—</span></div>
+            <div class="result-row total"><span>Total Pendapatan:</span><span class="angka" id="rPendapatan">—</span></div>
+        </div>
+
+        <h2>📉 RINCIAN BIAYA PRODUKSI (BPP)</h2>
+        <div class="result-box">
+            <div class="result-row"><span>1. Upah Langsung:</span><span class="angka" id="rUpah">—</span></div>
+            <div class="result-row subtotal"><span>2. Bahan Bantu:</span></div>
+            <div class="result-row subtotal"><span>&nbsp;&nbsp;a. Peralatan Produksi:</span><span class="angka" id="rPeralatan">—</span></div>
+            <div class="result-row subtotal"><span>&nbsp;&nbsp;b. Biaya Karung:</span><span class="angka" id="rKarung">—</span></div>
+            <div class="result-row subtotal"><span>&nbsp;&nbsp;c. Biaya Lain-lain:</span><span class="angka" id="rLainBahan">—</span></div>
+            <div class="result-row subtotal"><span>&nbsp;&nbsp;→ Total Bahan Bantu:</span><span class="angka" id="rSubBahan">—</span></div>
+            <div class="result-row subtotal"><span>3. Biaya Tidak Langsung:</span></div>
+            <div class="result-row subtotal"><span>&nbsp;&nbsp;a. Biaya Pengangkutan:</span><span class="angka" id="rAngkut">—</span></div>
+            <div class="result-row subtotal"><span>&nbsp;&nbsp;b. Pemeliharaan (Pupuk):</span><span class="angka" id="rPupukTotal">—</span></div>
+            <div class="result-row subtotal"><span>&nbsp;&nbsp;→ Total Biaya Tidak Langsung:</span><span class="angka" id="rSubTidakLangsung">—</span></div>
+            <div class="result-row total"><span>✅ BEBAN POKOK PENJUALAN (BPP):</span><span class="angka" id="rTotalBpp">—</span></div>
+            <div class="result-row"><span>Beban Penyusutan/Tahun:</span><span class="angka" id="rPenyusutan">—</span></div>
+            <div class="result-row"><span>➡️ LABA KOTOR:</span><span class="angka" id="rLabaKotor">—</span></div>
+            <div class="result-row"><span>📢 Beban Pemasaran:</span><span class="angka" id="rPemasaran">—</span></div>
+        </div>
+
+        <h2>✅ LABA/RUGI BERSIH TAHUNAN</h2>
+        <div class="result-box lababersih">
+            <div class="result-row" style="font-size:16px; font-weight:bold; color:#b45309;">
+                <span>💰 LABA/RUGI BERSIH:</span>
+                <span class="angka" id="rLabaBersih">—</span>
+            </div>
+        </div>
+
+        <h2>📈 SKENARIO PENINGKATAN HARGA JUAL</h2>
+        <div class="result-box" style="background:#eff6ff; border-left-color:#3b82f6;">
+            <div class="result-row"><span>🔵 Grade C — Pengepul (Rp 7.000/kg):</span><span class="angka" id="gradeC">—</span></div>
+            <div class="result-row"><span>🟢 Grade B — Pasar Lokal (Rp 8.500/kg):</span><span class="angka" id="gradeB">—</span></div>
+            <div class="result-row" style="font-weight:bold; color:#166534;"><span>🟡 Grade A — Pasar Modern (Rp 11.000/kg):</span><span class="angka" id="gradeA">—</span></div>
+        </div>
+
+        <p class="keterangan">💡 Semua angka sudah dibulatkan ke bilangan bulat. Angka bisa diedit, hasil berubah otomatis.</p>
+    </div>
+</div>
+
+<script>
+function formatRp(angka) {
+    const bulat = Math.round(angka);
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(bulat);
+}
+function formatKg(angka) {
+    const bulat = Math.round(angka);
+    return bulat.toLocaleString('id-ID') + ' kg (' + Math.round(bulat/1000).toLocaleString('id-ID') + ' Ton)';
+}
+
+function hitungSemua() {
+    // === AMBIL NILAI DARI KOLOM ===
+    const luas = parseFloat(document.getElementById('luas').value) || 0;
+    const jarak = parseFloat(document.getElementById('jarak').value) || 1;
+    const beratTandan = parseFloat(document.getElementById('beratTandan').value) || 0;
+    const susut = parseFloat(document.getElementById('susut').value) || 0;
+    const hargaJual = parseFloat(document.getElementById('hargaJual').value) || 0;
+    const investasi = parseFloat(document.getElementById('investasi').value) || 0;
+    const masaManfaat = parseFloat(document.getElementById('masaManfaat').value) || 1;
+
+    const jmlTenaga = parseFloat(document.getElementById('jmlTenaga').value) || 0;
+    const upahHari = parseFloat(document.getElementById('upahHari').value) || 0;
+    const masaPanen = parseFloat(document.getElementById('masaPanen').value) || 0;
+
+    const biayaPeralatan = parseFloat(document.getElementById('biayaPeralatan').value) || 0;
+    const biayaKarung = parseFloat(document.getElementById('biayaKarung').value) || 0;
+    const biayaLainBahan = parseFloat(document.getElementById('biayaLainBahan').value) || 0;
+
+    const biayaAngkut = parseFloat(document.getElementById('biayaAngkut').value) || 0;
+    const biayaNpk = parseFloat(document.getElementById('biayaNpk').value) || 0;
+    const biayaUrea = parseFloat(document.getElementById('biayaUrea').value) || 0;
+    const biayaKandang = parseFloat(document.getElementById('biayaKandang').value) || 0;
+
+    const bebanPemasaran = parseFloat(document.getElementById('bebanPemasaran').value) || 0;
+
+    // === HITUNG BPP ===
+    const biayaUpah = Math.round(jmlTenaga * upahHari * masaPanen);
+    const totalBahanBantu = Math.round(biayaPeralatan + biayaKarung + biayaLainBahan);
+    const totalPupuk = Math.round(biayaNpk + biayaUrea + biayaKandang);
+    const totalTidakLangsung = Math.round(biayaAngkut + totalPupuk);
+    const BEBAN_POKOK = Math.round(biayaUpah + totalBahanBantu + totalTidakLangsung);
+
+    // === PRODUKSI & PENDAPATAN ===
+    const jumlahPohon = Math.round((luas * 10000) / (jarak * jarak));
+    const produksiKasar = Math.round(jumlahPohon * beratTandan);
+    const beratRusak = Math.round(produksiKasar * susut / 100);
+    const produksiBersih = Math.round(produksiKasar - beratRusak);
+    const pendapatan = Math.round(produksiBersih * hargaJual);
+
+    // === PENYUSUTAN & LABA (DIBULATKAN) ===
+    const penyusutanTahun = Math.round(investasi / masaManfaat);
+    const labaKotor = Math.round(pendapatan - BEBAN_POKOK - penyusutanTahun);
+    const labaBersih = Math.round(labaKotor - bebanPemasaran);
+
+    // === SKENARIO HARGA ===
+    const labaC = labaBersih;
+    const labaB = Math.round((produksiBersih * 8500) - BEBAN_POKOK - penyusutanTahun - bebanPemasaran);
+    const labaA = Math.round((produksiBersih * 11000) - BEBAN_POKOK - penyusutanTahun - bebanPemasaran);
+
+    // === TAMPILKAN HASIL ===
+    document.getElementById('rPohon').textContent = jumlahPohon.toLocaleString('id-ID') + ' pohon';
+    document.getElementById('rKasar').textContent = formatKg(produksiKasar);
+    document.getElementById('rRusak').textContent = formatKg(beratRusak);
+    document.getElementById('rBersih').textContent = formatKg(produksiBersih);
+    document.getElementById('rPendapatan').textContent = formatRp(pendapatan);
+
+    document.getElementById('rUpah').textContent = formatRp(biayaUpah);
+    document.getElementById('rPeralatan').textContent = formatRp(biayaPeralatan);
+    document.getElementById('rKarung').textContent = formatRp(biayaKarung);
+    document.getElementById('rLainBahan').textContent = formatRp(biayaLainBahan);
+    document.getElementById('rSubBahan').textContent = formatRp(totalBahanBantu);
+    document.getElementById('rAngkut').textContent = formatRp(biayaAngkut);
+    document.getElementById('rPupukTotal').textContent = formatRp(totalPupuk);
+    document.getElementById('rSubTidakLangsung').textContent = formatRp(totalTidakLangsung);
+    document.getElementById('rTotalBpp').textContent = formatRp(BEBAN_POKOK);
+    document.getElementById('rPenyusutan').textContent = formatRp(penyusutanTahun);
+    document.getElementById('rLabaKotor').textContent = formatRp(labaKotor);
+    document.getElementById('rPemasaran').textContent = formatRp(bebanPemasaran);
+    document.getElementById('rLabaBersih').textContent = formatRp(labaBersih);
+
+    document.getElementById('gradeC').textContent = formatRp(labaC);
+    document.getElementById('gradeB').textContent = formatRp(labaB);
+    document.getElementById('gradeA').textContent = formatRp(labaA);
+}
+
+window.onload = hitungSemua;
+</script>
+
+</body>
+</html>
